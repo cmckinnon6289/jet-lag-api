@@ -86,9 +86,15 @@ app.post('/api/new-card', (req, res) => {
         description: req.body.description
     }
 
-    let push = "challenge"
+    let push;
 
-    if (req.body.type = 1) { CURSES.push(newCard); push = "curse" }
-    else CARDS.push(newCard);
+    if (req.body.type = 1) { 
+        CURSES.push(newCard)
+        push = "curse";
+    }
+    else {
+        CARDS.push(newCard)
+        push = "challenge";
+    };
     res.send(`added a new ${push} card`)
 })
