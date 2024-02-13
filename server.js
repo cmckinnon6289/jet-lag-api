@@ -88,7 +88,7 @@ app.post('/api/new-card', (req, res) => {
 
     let push;
 
-    if (req.body.type = 1) { 
+    if (req.body.type == 1) { 
         CURSES.push(newCard)
         push = "curse";
     }
