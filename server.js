@@ -74,7 +74,7 @@ app.get('/api/get-card', (req, res) => {
     } else {
         card = CARDS[num];
     }
-    res.send(card);
+    res.send(card ? card : "nothing found");
 })
 
 app.post('/api/new-card', (req, res) => {
