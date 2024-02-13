@@ -96,5 +96,5 @@ app.post('/api/new-card', (req, res) => {
         CARDS.push(newCard)
         push = "challenge";
     };
-    res.send(`for type ${type}, added a new ${push} card`)
+    res.send(`for type ${req.body.type}, added a new ${push} card`)
 })
