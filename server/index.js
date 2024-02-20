@@ -1,4 +1,11 @@
 import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import db from './db'
+
+import Challenge from './models/challenge'
+import Curse from './models/curse'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -57,12 +64,22 @@ const CURSES = [
 
 const deckLen = CARDS.length + CURSES.length;
 
-app.get('/api/assets/curses', (req, res) => {
-    res.send(CURSES);
-})
+app.get('/api/assets/curses', async (req, res) => {
+    try {
+        const curses = await Curse.find({});
+        res.json(curses);
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
-app.get('/api/assets/challenges', (req, res) => {
-    res.send(CARDS);
+app.get('/api/assets/challenges', async (req, res) => {
+    try {
+        const challenges = await Challenge.find({});
+        res.json(challenges);
+    } catch(err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 app.get('/api/get-card', (req, res) => {
