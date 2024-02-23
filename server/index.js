@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import db from './db'
 
-const db = require('./db')
 const Challenge = require('./models/Challenge')
 const Curse = require('./models/Curse')
 
