@@ -4,8 +4,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 const db = require('./db')
 
-import Challenge from './models/challenge'
-import Curse from './models/curse'
+import Challenge from './models/challenge.js'
+import Curse from './models/curse.js'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
