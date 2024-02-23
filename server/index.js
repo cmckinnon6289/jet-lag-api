@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-const db = require('./db')
 
-import Challenge from './models/Challenge'
-import Curse from './models/Curse'
+const db = require('./db')
+const Challenge = require('./models/Challenge')
+const Curse = require('./models/Curse')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
