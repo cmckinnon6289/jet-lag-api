@@ -1,6 +1,8 @@
 const mongoose = require("mongoose")
+const enviro = require("dotenv")
 
-const connectionString = `mongodb+srv://callum:7nwOqqmVPqVgroM4@jet-lag-knockoff.rnwupgu.mongodb.net/?retryWrites=true&w=majority`;
+enviro.config()
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.rnwupgu.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connect(connectionString, {
     useNewUrlParser: true,
