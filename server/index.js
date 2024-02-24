@@ -98,9 +98,9 @@ app.post('/api/internal/new-team', async(req, res) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: {
+            body: JSON.stringify({
                 content: `new team created with id ${doc._id}. check team_data cluster.`
-            }
+            })
         })
         res.status(200).json({ response: `successfully created team with id ${doc._id}` })
     } catch(err) {
