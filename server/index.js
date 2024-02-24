@@ -52,6 +52,15 @@ app.get('/api/internal/assets/challenges', async (req, res) => {
     }
 })
 
+app.get('/api/internal/assets/teams', async (req,res) => {
+    try {
+        const teams = await Team.find({});
+        res.json(teams);
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 app.post('/api/internal/new-challenge', async (req, res) => {
     try {
         const newChallenge = new Challenge({
