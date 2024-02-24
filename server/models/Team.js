@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true
-    },
     name: {
         type: String,
         required: true
@@ -13,7 +9,11 @@ const teamSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    claimed: {
+    districts: {
+        type: Array,
+        required: true
+    },
+    cardsConsumed: {
         type: Array,
         required: true
     }

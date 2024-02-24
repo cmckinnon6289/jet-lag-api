@@ -34,7 +34,7 @@ INTERNAL APIS BELOW.
 
 */
 
-app.get('/api/internalassets/curses', async (req, res) => {
+app.get('/api/internal/assets/curses', async (req, res) => {
     try {
         const curses = await Curse.find({});
         res.json(curses);
@@ -79,6 +79,21 @@ app.post('/api/internal/new-curse', async (req, res) => {
         })
         await newCurse.save()
         res.status(200).json({ response: "successfully pushed your new curse to the database!" })
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.post('/api/internal/new-team', async(req, res) => {
+    try {
+        const newTeam = new Team({
+            name: req.body.name,
+            balance: req.body.balance,
+            districts: [],
+            cardsConsumed: []
+        })
+        const doc = await newTeam.save()
+        res.status(200).json({ response: `successfully created team with id ${doc._id}` })
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
