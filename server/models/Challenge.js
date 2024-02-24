@@ -22,7 +22,7 @@ const cardSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-})
+}, { collection: 'challenges' })
 
 const Challenge = mongoose.model('Challenge', cardSchema);
 

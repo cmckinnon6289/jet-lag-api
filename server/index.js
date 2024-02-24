@@ -36,3 +36,33 @@ app.get('/api/assets/challenges', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 })
+
+app.post('/api/new-challenge', async (req, res) => {
+    try {
+        const newChallenge = new Challenge({
+            name: req.body.name,
+            description: req.body.description,
+            tokens: req.body.tokens,
+            canActive: req.body.canActive,
+            canVeto: req.body.canVeto            
+        })
+        await newChallenge.save()
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.post('/api/new-curse', async (req, res) => {
+    try {
+        const newCurse = new Curse({
+            name: req.body.name,
+            description: req.body.description,
+            tokens: req.body.tokens,
+            canActive: req.body.canActive,
+            canVeto: req.body.canVeto            
+        })
+        await newCurse.save()
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
