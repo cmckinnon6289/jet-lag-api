@@ -93,6 +93,15 @@ app.post('/api/internal/new-team', async(req, res) => {
             cardsConsumed: []
         })
         const doc = await newTeam.save()
+        fetch(`${process.env.NEW_TEAM_WEBHOOK}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                content: `new team created with id ${doc._id}. check team_data cluster.`
+            }
+        })
         res.status(200).json({ response: `successfully created team with id ${doc._id}` })
     } catch(err) {
         res.status(500).json({ error: err.message })
