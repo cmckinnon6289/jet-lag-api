@@ -11,6 +11,7 @@ app.use(cors());
 require('./db')
 const Challenge = require('./models/Challenge')
 const Curse = require('./models/Curse')
+const Team = require('./models/Team')
 
 const PORT = process.env.PORT || 5000;
 
@@ -27,7 +28,13 @@ app.get('/api/test', (req, res) => {
     }
 })
 
-app.get('/api/assets/curses', async (req, res) => {
+/*
+
+INTERNAL APIS BELOW.
+
+*/
+
+app.get('/api/internalassets/curses', async (req, res) => {
     try {
         const curses = await Curse.find({});
         res.json(curses);
@@ -36,7 +43,7 @@ app.get('/api/assets/curses', async (req, res) => {
     }
 });
 
-app.get('/api/assets/challenges', async (req, res) => {
+app.get('/api/internal/assets/challenges', async (req, res) => {
     try {
         const challenges = await Challenge.find({});
         res.json(challenges);
@@ -45,7 +52,7 @@ app.get('/api/assets/challenges', async (req, res) => {
     }
 })
 
-app.post('/api/new-challenge', async (req, res) => {
+app.post('/api/internal/new-challenge', async (req, res) => {
     try {
         const newChallenge = new Challenge({
             name: req.body.name,
@@ -61,7 +68,7 @@ app.post('/api/new-challenge', async (req, res) => {
     }
 })
 
-app.post('/api/new-curse', async (req, res) => {
+app.post('/api/internal/new-curse', async (req, res) => {
     try {
         const newCurse = new Curse({
             name: req.body.name,
@@ -72,6 +79,36 @@ app.post('/api/new-curse', async (req, res) => {
         })
         await newCurse.save()
         res.status(200).json({ response: "successfully pushed your new curse to the database!" })
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+/*
+
+TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
+
+*/
+
+app.patch('/api/teams/update', async(req, res) => {
+    try {
+        const team = await Team.find(t => t.id === parseInt(req.body.id))
+        if (!team) return res.status(404).json({ uhOh: `team with id ${req.body.id} not found. try again.` })
+
+        
+    } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.get('/api/teams/draw-challenge', async(req, res) => {
+    try {
+        //TODO: implement active card check
+
+        const allCards = await Challenge.find({});
+        const rand = Math.round(Math.random()*allCards.length)
+        const card = allCards[rand]
+        res.json(card);
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
