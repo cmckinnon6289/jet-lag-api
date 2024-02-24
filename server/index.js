@@ -21,7 +21,7 @@ app.get('/', (req,res) => res.send('hello. get off the API page.'))
 
 app.get('/api/test', (req, res) => {
     try {
-
+        res.send({response: "the API is working!"})
     } catch(err) {
         res.status(503).json({ error: "server isn't responding or you are so royally bad at doing API calls that you have managed to fuck up the test call. either way, lmao glhf." })
     }
