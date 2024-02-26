@@ -125,11 +125,8 @@ TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
 
 app.patch('/api/teams/update', async(req, res) => {
     try {
-        const teams = await Team.find([])
-        let team;
-        teams.forEach(t => {
-            if (t._id === req.body.id) team = t;
-        });
+        const teams = await Team.find({})
+        const team = teams.find((t) => t._id === req.body.id);
         if (!team) return res.status(404).json({ uhOh: `team with id ${req.body.id} not found. try again.` })
         team.balance = req.body.balance ? req.body.balance : team.balance;
         team.districts = req.body.districts ? req.body.districts : team.districts;
