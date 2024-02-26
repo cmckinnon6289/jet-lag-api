@@ -98,8 +98,8 @@ app.post('/api/internal/new-team', async(req, res) => {
         const newTeam = new Team({
             name: req.body.name,
             balance: req.body.balance,
-            districts: [],
-            cardsConsumed: []
+            districts: req.body.balance ? req.body.balance : [],
+            cardsConsumed: req.body.consumed ? req.body.consumed : []
         })
         const doc = await newTeam.save()
         fetch(`${process.env.NEW_TEAM_WEBHOOK}`, {
@@ -125,10 +125,11 @@ TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
 
 app.patch('/api/teams/update', async(req, res) => {
     try {
-        const team = await Team.find(t => t.id === parseInt(req.body.id))
+        const team = await Team.find(t => t._id === parseInt(req.body.id))
         if (!team) return res.status(404).json({ uhOh: `team with id ${req.body.id} not found. try again.` })
-
-        
+        team.balance = req.body.balance ? req.body.balance : team.balance;
+        team.districts = req.body.districts ? req.body.districts : team.districts;
+        team.cardsClaimed = req.body.cards ? req.body.cards : team.cardsClaimed;
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
