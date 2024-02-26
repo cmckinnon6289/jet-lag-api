@@ -129,7 +129,7 @@ app.patch('/api/teams/update', async(req, res) => {
         let team;
         teams.forEach((t) => {
             console.log(t._id);
-            if (t._id === req.body.id) team = t;
+            if (String(t._id) === req.body.id) team = t;
         })
         if (!team) return res.status(404).json({ uhOh: `team with id ${req.body.id} not found. try again.` })
         team.balance = req.body.balance ? req.body.balance : team.balance;
