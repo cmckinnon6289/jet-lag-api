@@ -98,8 +98,8 @@ app.post('/api/internal/new-team', async(req, res) => {
         const newTeam = new Team({
             name: req.body.name,
             balance: req.body.balance,
-            districts: req.body.balance ? req.body.balance : [],
-            cardsConsumed: req.body.consumed ? req.body.consumed : []
+            districts: req.body.districts ? req.body.districts : [],
+            deck: req.body.deck ? req.body.deck : []
         })
         const doc = await newTeam.save()
         fetch(`${process.env.NEW_TEAM_WEBHOOK}`, {
@@ -125,16 +125,13 @@ TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
 
 app.patch('/api/teams/update', async(req, res) => {
     try {
-        const teams = await Team.find({})
-        let team;
-        teams.forEach((t) => {
-            console.log(t._id);
-            if (String(t._id) === req.body.id) team = t;
-        })
+        const team = await Team.findById(req.body.id);
         if (!team) return res.status(404).json({ uhOh: `team with id ${req.body.id} not found. try again.` })
-        team.balance = req.body.balance ? req.body.balance : team.balance;
-        team.districts = req.body.districts ? req.body.districts : team.districts;
-        team.cardsClaimed = req.body.cards ? req.body.cards : team.cardsClaimed;
+        for (const property in req.body.update) {
+            team[property] = req.body.update[property];
+        }
+        team.save()
+        res.status(200).json({ update: "successfully updated the team!", updatedTeam: team});
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
@@ -142,11 +139,10 @@ app.patch('/api/teams/update', async(req, res) => {
 
 app.get('/api/teams/draw-challenge', async(req, res) => {
     try {
-        //TODO: implement active card check
-
         const allCards = await Challenge.find({});
-        const rand = Math.round(Math.random()*allCards.length)
+        const rand = Math.floor(Math.random()*allCards.length)
         const card = allCards[rand]
+
         res.json(card);
     } catch(err) {
         res.status(500).json({ error: err.message })

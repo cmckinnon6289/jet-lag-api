@@ -13,7 +13,7 @@ const teamSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    cardsConsumed: {
+    deck: {
         type: Array,
         required: true
     }
