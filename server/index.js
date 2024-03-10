@@ -100,7 +100,7 @@ app.post('/api/internal/new-team', async(req, res) => {
             deck: req.body.deck ? req.body.deck : []
         })
         if (await(Team.findOne({name: req.body.name}))) {
-            return res.status(400)
+            return res.status(400).json({ error: `team with name ${req.body.name} already exists.` })
         }
         const doc = await newTeam.save()
         try {
