@@ -17,9 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`server started port ${PORT}`))
 
-
 app.get('/', (req,res) => res.send('hello. get off the API page.'))
-
 app.get('/api/test', (req, res) => {
     try {
         res.send({response: "the API is working!"})
@@ -101,16 +99,23 @@ app.post('/api/internal/new-team', async(req, res) => {
             districts: req.body.districts ? req.body.districts : [],
             deck: req.body.deck ? req.body.deck : []
         })
+        if (await(Team.findOne({name: req.body.name}))) {
+            return res.status(400)
+        }
         const doc = await newTeam.save()
-        fetch(`${process.env.NEW_TEAM_WEBHOOK}`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                content: `new team created with id ${doc._id}. check team_data cluster.`
+        try {
+            fetch(`${process.env.NEW_TEAM_WEBHOOK}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: `new team created with id ${doc._id}. check team_data cluster.`
+                })
             })
-        })
+        } catch (error) {
+            return res.status(200).json({ response: `successfully created team with id ${doc._id}.`, error: `could not fire discord webhook. reason: ${err.message}` });
+        }
         res.status(200).json({ response: `successfully created team with id ${doc._id}` })
     } catch(err) {
         res.status(500).json({ error: err.message })
