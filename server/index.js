@@ -32,7 +32,7 @@ INTERNAL APIS BELOW.
 
 */
 
-api.get('/api/internal/assets/cards', async (req, res) => {
+app.get('/api/internal/assets/cards', async (req, res) => {
     try {
         const cards = await Card.find({});
         res.json(cards);
