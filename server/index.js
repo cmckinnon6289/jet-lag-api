@@ -69,7 +69,7 @@ app.post('/api/internal/new-challenge', async (req, res) => {
             canVeto: req.body.canVeto            
         })
         await newChallenge.save()
-        res.status(200).json({ response: "successfully pushed your new challenge to the database!" })
+        res.status(201).json({ response: "successfully pushed your new challenge to the database!" })
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
@@ -85,7 +85,7 @@ app.post('/api/internal/new-curse', async (req, res) => {
             canVeto: req.body.canVeto            
         })
         await newCurse.save()
-        res.status(200).json({ response: "successfully pushed your new curse to the database!" })
+        res.status(201).json({ response: "successfully pushed your new curse to the database!" })
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
@@ -114,9 +114,9 @@ app.post('/api/internal/new-team', async(req, res) => {
                 })
             })
         } catch (err) {
-            return res.status(200).json({ response: `successfully created team with id ${doc._id}.`, error: `could not fire discord webhook. reason: ${err.message}` });
+            return res.status(201).json({ response: `successfully created team with id ${doc._id}.`, error: `could not fire discord webhook. reason: ${err.message}` });
         }
-        res.status(200).json({ response: `successfully created team with id ${doc._id}` })
+        res.status(201).json({ response: `successfully created team with id ${doc._id}` })
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
