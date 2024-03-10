@@ -113,7 +113,7 @@ app.post('/api/internal/new-team', async(req, res) => {
                     content: `new team created with id ${doc._id}. check team_data cluster.`
                 })
             })
-        } catch (error) {
+        } catch (err) {
             return res.status(200).json({ response: `successfully created team with id ${doc._id}.`, error: `could not fire discord webhook. reason: ${err.message}` });
         }
         res.status(200).json({ response: `successfully created team with id ${doc._id}` })
