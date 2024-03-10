@@ -1,7 +1,7 @@
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -9,9 +9,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 require('./db')
-const Challenge = require('./models/Challenge')
-const Curse = require('./models/Curse')
-const Team = require('./models/Team')
+const Card = require('./models/Card');
+const Team = require('./models/Team');
+const User = require('./models/User');
 
 const PORT = process.env.PORT || 5000;
 
@@ -32,21 +32,12 @@ INTERNAL APIS BELOW.
 
 */
 
-app.get('/api/internal/assets/curses', async (req, res) => {
+api.get('/api/internal/assets/cards', async (req, res) => {
     try {
-        const curses = await Curse.find({});
-        res.json(curses);
-    } catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/internal/assets/challenges', async (req, res) => {
-    try {
-        const challenges = await Challenge.find({});
-        res.json(challenges);
-    } catch(err) {
-        res.status(500).json({ error: err.message });
+        const cards = await Card.find({});
+        res.json(cards);
+    } catch (err) {
+        res.status(500).json({ error: err.message })
     }
 })
 
@@ -61,7 +52,8 @@ app.get('/api/internal/assets/teams', async (req,res) => {
 
 app.post('/api/internal/new-challenge', async (req, res) => {
     try {
-        const newChallenge = new Challenge({
+        const newChallenge = new Card({
+            type: 0,
             name: req.body.name,
             description: req.body.description,
             tokens: req.body.tokens,
@@ -77,7 +69,8 @@ app.post('/api/internal/new-challenge', async (req, res) => {
 
 app.post('/api/internal/new-curse', async (req, res) => {
     try {
-        const newCurse = new Curse({
+        const newCurse = new Card({
+            type: 1,
             name: req.body.name,
             description: req.body.description,
             tokens: req.body.tokens,
@@ -122,6 +115,25 @@ app.post('/api/internal/new-team', async(req, res) => {
     }
 })
 
+app.delete('/api/internal/delete-team', async(req, res) => {
+    try {
+        await Team.findByIdAndDelete(req.body.id);
+        res.status(200).json({ success: `successfully deleted team with id ${req.body.id}!` })
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+})
+
+// only used in specific purposes
+app.delete('/api/internal/delete-all-cards', async(req,res) => {
+    try {
+        await Card.deleteMany({});
+        res.status(200).json({ success: "successfully deleted all cards!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+})
+
 /*
 
 TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
@@ -142,9 +154,9 @@ app.patch('/api/teams/update', async(req, res) => {
     }
 })
 
-app.get('/api/teams/draw-challenge', async(req, res) => {
+app.get('/api/teams/draw-card', async(req, res) => {
     try {
-        const allCards = await Challenge.find({});
+        const allCards = await Card.find({});
         const rand = Math.floor(Math.random()*allCards.length)
         const card = allCards[rand]
 
