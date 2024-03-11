@@ -12,6 +12,7 @@ require('./db')
 const Card = require('./models/Card');
 const Team = require('./models/Team');
 const User = require('./models/User');
+const District = require('./models/District');
 
 const PORT = process.env.PORT || 5000;
 
@@ -46,6 +47,16 @@ app.get('/api/internal/assets/teams', async (req,res) => {
         const teams = await Team.find({});
         res.json(teams);
     } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.get('/api/internal/assets/districts/:id', async(req,res) => {
+    try {
+        const district = await District.findOne({ districtID: req.params.id });
+        if (!district) return res.status(404).json({ error: `district with ID ${req.params.id} not found.` });
+        res.status(200).json(district);
+    } catch (err) {
         res.status(500).json({ error: err.message })
     }
 })
@@ -124,16 +135,6 @@ app.delete('/api/internal/delete-team', async(req, res) => {
     }
 })
 
-// only used in specific purposes
-app.delete('/api/internal/delete-all-cards', async(req,res) => {
-    try {
-        await Card.deleteMany({});
-        res.status(200).json({ success: "successfully deleted all cards!" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-})
-
 /*
 
 TEAM DATA API BELOW. BE CAUTIOUS WHEN EDITING.
@@ -162,6 +163,21 @@ app.get('/api/teams/draw-card', async(req, res) => {
 
         res.json(card);
     } catch(err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.post('/api/teams/claim-district/:id', async(req,res) => {
+    try {
+        const district = await District.findOne({ districtID: req.params.id });
+        if (!district) res.status(404).json({ error: `district with ID ${req.params.id} not found.` });
+        else if (district.team) res.status(423).json({ error: `district with ID ${req.params.id} already claimed by ${district.team.name}.` })
+        else {
+            //TODO: get team from session ID.
+            //TODO: add team to district object.
+            res.status(200).json({ success: `congratulations! you have officially claimed the district #${req.params.id}: ${district.name}.` })
+        }
+    } catch (err) {
         res.status(500).json({ error: err.message })
     }
 })
