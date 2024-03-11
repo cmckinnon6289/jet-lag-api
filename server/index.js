@@ -165,3 +165,12 @@ app.get('/api/teams/draw-card', async(req, res) => {
         res.status(500).json({ error: err.message })
     }
 })
+
+app.get('/api/teams/get/:id', async(req, res) => {
+    try {
+        const target = await Team.findById(req.params.id);
+        res.json(target);
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
