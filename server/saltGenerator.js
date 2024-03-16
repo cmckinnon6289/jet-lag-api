@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const generateSalt = async (saltRounds = process.env.SALT_ROUNDS) => {
+const generateSalt = async (saltRounds = Number(process.env.SALT_ROUNDS)) => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
     return salt;

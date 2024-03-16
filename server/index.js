@@ -31,6 +31,7 @@ const Team = require('./models/Team');
 const User = require('./models/User');
 const District = require('./models/District');
 const Product = require('./models/Product');
+const Transaction = require('./models/Transaction');
 
 const PORT = process.env.PORT || 5000;
 
@@ -238,5 +239,21 @@ app.get('/api/teams/get/:id', async(req, res) => {
         res.json(target);
     } catch (err) {
         res.status(500).json({ error: err.message })
+    }
+})
+
+app.post('/api/teams/purchase', async(req, res) => {
+    try {
+        const prod = await Product.findById(req.body.PID);
+        //TODO: patch team's token count
+        const log = new Transaction({
+            team: req.body.TID, //TODO: update this to get a real team ID
+            product: prod.name,
+            time: new Date()
+        });
+        await log.save();
+        res.status(200).json({ response: "successfully purchased! a log has been made of this transaction." });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 })
