@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/User'); // Define your User model
 
 passport.use(new LocalStrategy(
-  { usernameField: 'email' },
+  { usernameField: 'username' },
   async (email, password, done) => {
     try {
       console.log('Authenticating user:', email); // Log the email being authenticated
