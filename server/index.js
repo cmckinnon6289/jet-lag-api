@@ -1,18 +1,36 @@
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport'); // Import the configured Passport instance
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const authRoutes = require('./routes/auth');
+const generateSalt = require('./saltGenerator');
 
 const app = express();
 
+require('./passport');
+require('./db')
+
+app.set('view engine', 'ejs'); // Assuming you're using EJS for templating
+app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: `${generateSalt()}`, // Replace 'secret' with your session secret
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use('/auth', authRoutes);
 
-require('./db')
 const Card = require('./models/Card');
 const Team = require('./models/Team');
 const User = require('./models/User');
 const District = require('./models/District');
+const Product = require('./models/Product');
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,6 +44,28 @@ app.get('/api/test', (req, res) => {
         res.status(503).json({ error: "server isn't responding or you are so royally bad at doing API calls that you have managed to fuck up the test call. either way, lmao glhf." })
     }
 })
+
+/*
+
+PASSPORT BELOW
+
+*/
+
+const isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
+};
+
+const hasPermission = (requiredRole) => {
+    return (req, res, next) => {
+        if (req.user && req.user.role === requiredRole) {
+            return next();
+        }
+        res.status(403).send('Forbidden');
+    };
+};
 
 /*
 
@@ -58,6 +98,16 @@ app.get('/api/internal/assets/districts/:id', async(req,res) => {
         res.status(200).json(district);
     } catch (err) {
         res.status(500).json({ error: err.message })
+    }
+})
+
+app.post('/api/temp/new-product', async (req,res) => {
+    try {
+        const newProd = new Product(req.body);
+        await newProd.save();
+        res.status(201).json({ response: "successfully pushed your new product to the database!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 })
 
